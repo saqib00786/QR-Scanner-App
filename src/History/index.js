@@ -1,46 +1,57 @@
-import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View, Alert, ToastAndroid } from 'react-native'
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from 'react-native-paper';
 import HistoryCard from '../../Components/historyCard';
-import { onShare, onFavourite, onRemoveItem } from '../../util/Misc';
+import LottieAnimatedView from '../../Components/LottieAnimatedView';
+import { GREEN_COLOR } from '../../res/colors';
+import { onShare, onFavourite, onRemoveItem, readData } from '../../util/Misc';
 
 const History = ({ navigation }) => {
-  const [data, setData] = useState()
-  const [refreshing, setRefreshing] = useState(false);
+  const [data, setData] = useState(0)
+  const [refreshing, setRefreshing] = useState(true);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      readData()
+      onReadData()
     })
 
     return unsubscribe
+  }, [navigation, onReadData, onFavourite])
 
-  }, [navigation])
-
-
-
-
-  const readData = async () => {
-    const keys = await AsyncStorage.getAllKeys()
-    const result = await AsyncStorage.multiGet(keys)
+  const favCallback = async (id) => {
+    let result = await readData();
     setData(result)
     setRefreshing(false)
   }
 
+  const onReadData = async () => {
+    let result = await readData();
+    setData(result)
+    setRefreshing(false)
+  }
+
+
+  const callback = async (id) => {
+    const filterData = data.filter(val => {
+      return val[0] !== id
+    })
+    setData(filterData)
+  }
+
   const renderItem = ({ item }) => {
-    console.log("🚀 ~ file: index.js ~ line 60 ~ renderItem ~ item", item[0])
-    const obj = JSON.parse(item[1])
-    console.log("🚀 ~ file: index.js ~ line 71 ~ renderItem ~ obj", obj)
+    const Obj = JSON.parse(item[1])
+    const { id, data, date, isFav } = Obj
     return (
       <HistoryCard
-        id={item[0]}
-        data={obj.data}
-        date={obj.date}
-        onRemoveItem={() => onRemoveItem(item[0])}
-        onShare={() => onShare(obj.data)}
-        onFavourite={() => onFavourite(item[0])}
-        isFav={obj.isFav}
+        id={id}
+        data={data}
+        date={date}
+        onRemoveItem={async () => {
+          await onRemoveItem(id, () => callback(id))
+        }}
+        onShare={() => onShare(data)}
+        onFavourite={() => onFavourite(id, () => favCallback())}
+        isFav={isFav}
         navigation={navigation}
       />
     )
@@ -48,20 +59,26 @@ const History = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {refreshing ? <ActivityIndicator /> : null}
-      <FlatList
-        style={styles.flatList}
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item[0]}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={readData}
-          />
-        }
-      />
-
+      {refreshing ? <ActivityIndicator
+        color={GREEN_COLOR}
+        size={'large'} /> : null}
+      {Object.entries(data).length > 0 ?
+        <FlatList
+          style={styles.flatList}
+          data={data}
+          renderItem={renderItem}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onReadData}
+            />
+          }
+        />
+        :
+        <LottieAnimatedView
+          source={require("../../assets/empty.json")}
+        />
+      }
     </View>
   )
 }

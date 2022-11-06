@@ -1,0 +1,1 @@
+export const APP_LOGO = require("../assets/logo.png")

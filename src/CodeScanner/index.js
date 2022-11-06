@@ -1,57 +1,74 @@
-import { Button, StyleSheet, Text, View, Dimensions, TouchableOpacity, StatusBar } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Dimensions } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider'
 import { Camera, CameraType, FlashMode } from 'expo-camera';
 import SideButtons from '../../Components/SideButtons';
 import { Avatar } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
-import DateTime from '../../util/Misc';
+import { DateTime, playSound, StoreData } from '../../util/Misc';
+import LottieAnimatedView from '../../Components/LottieAnimatedView'
 import uuid from 'react-native-uuid';
+import { GREEN_COLOR } from '../../res/colors';
+import MaskedArea from '../../Components/MaskedArea';
 
-const { height, width } = Dimensions.get('window')
-
-
-const CodeScanner = (props) => {
+const CodeScanner = ({ navigation }) => {
     const [permissions, setPermissions] = Camera.useCameraPermissions()
     const [scanned, setScanned] = useState(false)
-    const [sound, setSound] = useState()
-    const [flash, setFlash] = useState(FlashMode.torch)
+    const [flash, setFlash] = useState(FlashMode.off)
     const [zoom, setZoom] = useState(0)
     const isFocused = useIsFocused();
 
     const date = DateTime()
+    const id = uuid.v4().slice(0, 8).toString()
 
 
     const [type, setType] = useState(CameraType.back)
-    const Id = uuid.v4().slice(0, 8).toString()
     StatusBar.setHidden(true)
+
+    const Obj = {
+        date,
+        isFav: false,
+        id
+    }
+
+    const StoreData_Local = async (id, Obj) => {
+        await StoreData(id, Obj)
+    }
 
     function toggleCameraType() {
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
     }
 
-    async function playSound() {
-        const { sound } = await Audio.Sound.createAsync(require('../../assets/beep.mp3')
-        );
-        setSound(sound);
-        await sound.playAsync();
+
+    useEffect(() => {
+        getPermissions()
+    }, [])
+
+
+
+    const getPermissions = async () => {
+        const { status } = await Camera.requestCameraPermissionsAsync();
+        setPermissions(status === 'granted')
     }
 
 
-    const handleBarCodeScanned = ({ type, data }) => {
+
+    const handleBarCodeScanned = ({ data }) => {
         setScanned(true)
         playSound()
         setTimeout(() => {
             setScanned(false)
-            props.navigation.navigate("ScanScreen", { data: data, date, Id })
-            console.log("🚀 ~ file: index.js ~ line 42 ~ handleBarCodeScanned ~ context", type, data)
+            const newObj = { ...Obj, data }
+            StoreData_Local(id, newObj)
+            navigation.navigate("ScanScreen", { data, date, id })
         }, 500)
 
     }
 
     if (!permissions || !permissions.granted) {
-        return <Text>No access to camera</Text>;
+        return <LottieAnimatedView
+            source={require("../../assets/camera.json")}
+        />
     }
 
     const onZoomAction = (isIncrement) => {
@@ -70,11 +87,13 @@ const CodeScanner = (props) => {
                 <Camera
                     type={type}
                     onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                    style={{ flex: 1 }}
+                    style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
                     flashMode={flash}
                     zoom={zoom}
                     ratio='16:9'
-                />
+                >
+                    <MaskedArea/>
+                </Camera>
             }
 
             <View style={styles.TopView}>
@@ -96,10 +115,6 @@ const CodeScanner = (props) => {
                             "flash" :
                             'flash-off'}
                 />
-                {/* <SideButtons
-                    onPress={() => alert("First")}
-                    icon='image'
-                /> */}
 
             </View>
             <View style={styles.slider}>
@@ -170,5 +185,5 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center'
-    }
+    },
 }) 

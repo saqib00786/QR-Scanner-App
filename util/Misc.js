@@ -1,60 +1,50 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, View, ToastAndroid, Share, Alert } from 'react-native'
+import { Share, Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-root-toast';
+import { Audio } from 'expo-av';
 
-export default function DateTime() {
-
-    const date = new Date().toLocaleDateString()
-    const time = new Date().toLocaleTimeString()
-    var sec = new Date().toLocaleString()
-    console.log("🚀 ~ file: Misc.js ~ line 8 ~ DateTime ~ sec", sec)
-
-
-    return `${sec}`
-    //return `${time}  ${date}`
+export function DateTime() {
+    return new Date().toLocaleString()
 }
 
 export const onShare = async (content) => {
-    const result = await Share.share({
+    await Share.share({
         message: content
     })
-    if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-            // shared with activity type of result.activityType
-        } else {
-            // shared
-        }
-    } else if (result.action === Share.dismissedAction) {
-        // dismissed
-    }
 }
 
-export const onFavourite = async (id) => {
+export const onFavourite = async (id, cb = null) => {
     await AsyncStorage.getItem(id).then(async obj => {
         obj = JSON.parse(obj)
 
         if (obj.isFav) {
             obj.isFav = false
-            ToastAndroid.show("Remove Favourite Marked", ToastAndroid.SHORT)
+            if (typeof (cb) == 'function') {
+                cb(false)
+            }
+            Toast.show("Remove Favourite Marked", { duration: Toast.durations.SHORT })
         } else {
             obj.isFav = true
-            ToastAndroid.show("Favourite Marked", ToastAndroid.SHORT)
+            if (typeof (cb) == 'function') {
+                cb(true)
+            }
+            Toast.show("Favourite Marked", { duration: Toast.durations.SHORT })
         }
 
         await AsyncStorage.setItem(id, JSON.stringify(obj))
     })
 }
 
-export const onRemoveItem = async (id, navigation = '') => {
+export const onRemoveItem = async (id, cb = null) => {
     Alert.alert(
         'Delete',
-        'You Want To Delete The Item?',
+        'You want to delete the item?',
         [
             {
                 text: "No",
                 style: 'cancel',
                 onPress: () => {
-                    console.log("Cancel")
+                    //do nothing
                 }
             },
             {
@@ -62,10 +52,14 @@ export const onRemoveItem = async (id, navigation = '') => {
                 style: 'default',
                 onPress: async () => {
                     try {
-                        await AsyncStorage.removeItem(id)
-                        navigation.goBack()
+                        await AsyncStorage.removeItem(id);
+                        if (typeof (cb) == 'function') {
+                            cb(true);
+                        }
+                        Toast.show("ٰItem Deleted Successfully", { duration: Toast.durations.SHORT })
+                        // navigation && navigation.goBack()
                     } catch (e) {
-                        console.log("🚀 ~ file: menu.js ~ line 56 ~ onPress: ~ e", e)
+                        Toast.show(e, { duration: Toast.durations.SHORT })
                     }
                 }
             },
@@ -78,5 +72,20 @@ export const readData = async () => {
     const keys = await AsyncStorage.getAllKeys()
     const result = await AsyncStorage.multiGet(keys)
     return result
-    setRefreshing(false)
-  }
+}
+
+export const StoreData = async (id, Obj) => {
+    try {
+        await AsyncStorage.setItem(id, JSON.stringify(Obj))
+        Toast.show("Data Saved Successfully", { duration: Toast.durations.SHORT })
+    } catch (e) {
+        Toast.show(e, { duration: Toast.durations.SHORT })
+    }
+}
+
+
+export async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(require('../assets/beep.mp3')
+    );
+    await sound.playAsync();
+}

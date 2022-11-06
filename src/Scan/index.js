@@ -1,74 +1,50 @@
-import { StyleSheet, Text, View, Button, Dimensions, ToastAndroid, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView,Text } from 'react-native'
 import React, { useEffect } from 'react'
 import ScanActions from '../../Components/ScanActions'
 import DataCard from '../../Components/DataCard'
-import Menu from '../../Components/menu'
 import QRCode from 'react-native-qrcode-svg';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StoreData } from '../../util/Misc'
+import { GREEN_COLOR, WHITE_COLOR } from '../../res/colors';
 
-const { height, width } = Dimensions.get("window")
 
 const ScanScreen = ({ route, navigation }) => {
     const { params } = route
-    const { data, date, Id } = params
+    const { data, date, id } = params
 
-    const Obj = {
-        data: data,
-        date: date,
-        isFav: false,
-    }
+    // useEffect(() => {
+    //     const unsubscribe = navigation.addListener('focus', () => {
+    //         StoreData_Local()
+    //     });
 
-    const Item = JSON.stringify(Obj)
-    //console.log("🚀 ~ file: index.js ~ line 21 ~ ScanScreen ~ Item", Item)
-
-
-    const StoreData = async () => {
-        try {
-            await AsyncStorage.setItem(Id, Item)
-            ToastAndroid.show("Saved...", ToastAndroid.SHORT)
-        } catch (e) {
-            console.log("🚀 ~ file: index.js ~ line 18 ~ StoreData ~ e", e)
-            ToastAndroid.show("Error while saving...", ToastAndroid.SHORT)
-        }
-    }
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            StoreData()
-        });
-
-        return unsubscribe;
-    }, [])
+    //     return unsubscribe;
+    // }, [])
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
+        <View style={styles.container} >
+            <ScrollView>
                 <DataCard
                     data={data}
                     date={date}
+                    id={id}
+                    navigation={navigation}
                 />
+
+                <View style={styles.headingView}>
+                    <Text style={styles.qrCodeHeading}>Scanned QR Code / Bar Code</Text>
+                </View>
+
+                <View style={styles.QRCode}>
+                    <QRCode
+                        size={160}
+                        value={data}
+                    />
+                </View>
                 <ScanActions
                     copiedText={data}
                     navigation={navigation}
                 />
-                <View style={styles.QRCode}>
-                    <QRCode
-                        size={200}
-                        value={data}
-                    />
-                </View>
-
-                <View style={styles.menu}>
-                    <Menu
-                        data={data}
-                        date={date}
-                        id={Id}
-                        navigation={navigation}
-                    />
-                </View>
-
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     )
 }
 
@@ -77,20 +53,39 @@ export default ScanScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
-    },
-    menu: {
-        position: 'absolute',
-        width: width,
-        height: height,
-        right: 0,
-        bottom: 0,
+        marginBottom: 8,
+        backgroundColor : WHITE_COLOR
     },
     QRCode: {
-        width: 200,
-        height: 200,
-        alignSelf: 'center',
-        marginTop: 50
+        width: '90%',
+        height: 220,
+        alignSelf : 'center',
+        justifyContent : 'center',
+        alignItems : 'center',
+        paddingTop: 10,
+        backgroundColor : 'whitesmoke',
+        borderBottomEndRadius : 8,
+        borderBottomStartRadius : 8
+    },
+    qrCodeHeading:{
+        fontWeight : 'bold',
+        fontSize : 18,
+        color : WHITE_COLOR,
+    },
+    headingView:{
+        marginEnd : 8,
+        marginStart : 8,
+        marginTop : 30,
+        paddingLeft : 20,
+        padding : 8,
+        width : '90%',
+        alignSelf : 'center',
+        justifyContent : 'center',
+        alignItems : 'center',
+        backgroundColor : GREEN_COLOR,
+        borderTopEndRadius : 8,
+        borderTopStartRadius : 8
+       
     }
 
 })

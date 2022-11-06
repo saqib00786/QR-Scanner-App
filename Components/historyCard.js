@@ -1,16 +1,15 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
 import { Avatar } from 'react-native-paper'
-import { onShare } from '../util/Misc'
+import { GREEN_COLOR } from '../res/colors'
 
 const HistoryCard = ({ data, date, onRemoveItem, onShare, onFavourite, isFav, id, navigation }) => {
-
     return (
         <View style={styles.container}>
 
             <TouchableOpacity
-                activeOpacity={0.1}
-                onPress={() => { navigation.navigate("ScanScreen", { data, date, id }) }}
+                activeOpacity={0.7}
+                onPress={() => { navigation.navigate("ScanScreen", { data, date, id}) }}
                 style={styles.ScanedData}>
                 <Text style={styles.PCodeStyle}>{data}</Text>
                 <View style={styles.dateSty}>
@@ -27,12 +26,12 @@ const HistoryCard = ({ data, date, onRemoveItem, onShare, onFavourite, isFav, id
                 <BottomActions
                     onPress={onShare}
                     icon={'share-variant'}
-                    color={'gray'}
+                    color={GREEN_COLOR}
                 />
                 <BottomActions
                     onPress={onRemoveItem}
                     icon={'delete'}
-                    color={'gray'}
+                    color={'tomato'}
                 />
             </View>
         </View>
@@ -95,11 +94,11 @@ const styles = StyleSheet.create({
     dateSty: {
         position: 'absolute',
         right: 12,
-        bottom: 4
+        top: 4
     },
     dateWrapper: {
         fontWeight: '400',
-        fontSize: 14
+        fontSize: 14,
     },
     actionDel: {
     },

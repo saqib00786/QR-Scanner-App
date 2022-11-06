@@ -10,6 +10,7 @@ import CustomDrawer from '../../Components/CustomDrawer'
 import History from '../History'
 import Favourite from '../Favourite'
 import WebViewScreen from '../WebView'
+import { GREEN_COLOR, WHITE_COLOR } from '../../res/colors'
 
 const Stack = createNativeStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -21,20 +22,22 @@ const Navigation = () => {
                 useLegacyImplementation
                 drawerContent={(props) => <CustomDrawer {...props} />}
                 screenOptions={{
-                    drawerStyle: { width: "60%" }
+                    drawerStyle: { 
+                        width: "60%" ,
+                },
                 }}
             //initialRouteName='ScanScreen'
             >
                 <Stack.Screen
                     name='CodeScanner'
                     component={CodeScanner}
-                    options={{ headerShown: true, title: "Scan" }}
+                    options={{ title: "Scan", headerStyle: { backgroundColor: GREEN_COLOR }, headerTintColor: WHITE_COLOR }}
                 //headerTransparent: true,headerTintColor : '#fff'
                 />
                 <Stack.Screen
                     name='ScanScreen'
                     component={ScanScreen}
-                //options={{ headerShown: false }}
+                    options={{ title: "Data", headerStyle: { backgroundColor: GREEN_COLOR }, headerTintColor: WHITE_COLOR }}
                 />
                 { /* <Stack.Screen
                     name='CreateScreen'
@@ -44,12 +47,13 @@ const Navigation = () => {
                 <Stack.Screen
                     name='History'
                     component={History}
-                //options={{ headerShown: false }}
+                    options={{ title: "History", headerStyle: { backgroundColor: GREEN_COLOR }, headerTintColor: WHITE_COLOR }}
+
                 />
                 <Stack.Screen
                     name='Favourite'
                     component={Favourite}
-                //options={{ headerShown: false }}
+                    options={{ title: "Favourite", headerStyle: { backgroundColor: GREEN_COLOR }, headerTintColor: WHITE_COLOR }}
                 />
                 <Stack.Screen
                     name='WebViewScreen'

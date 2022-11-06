@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, BackHandler, Platform } from 'react-native'
+import { StyleSheet, View, BackHandler, Platform } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { WebView } from 'react-native-webview';
-import { Appbar, Avatar } from 'react-native-paper';
+import { Avatar } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { WHITE_COLOR,GREEN_COLOR } from '../../res/colors';
 
 
 
@@ -13,7 +14,7 @@ const WebViewScreen = ({ route, navigation }) => {
     const [goBack, setGoBack] = useState('')
     const [goForward, setGoForward] = useState('')
     const [currentUrl, setCurrentUrl] = useState('')
- 
+
 
     const webRef = useRef(null)
 
@@ -55,7 +56,7 @@ const WebViewScreen = ({ route, navigation }) => {
                     <Avatar.Icon
                         size={50}
                         icon={'keyboard-backspace'}
-                        color='#000'
+                        color={WHITE_COLOR}
                         style={{ backgroundColor: 'transparent' }}
                     />
                 </TouchableOpacity>
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
     topBar: {
         elevation: 5,
         width: '100%',
-        height: 60
+        height: 60,
+        backgroundColor : GREEN_COLOR
     }
 })
