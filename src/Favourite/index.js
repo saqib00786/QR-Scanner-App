@@ -4,6 +4,8 @@ import { ActivityIndicator } from 'react-native-paper';
 import HistoryCard from '../../Components/historyCard';
 import { onFavourite, onRemoveItem, onShare, readData } from '../../util/Misc';
 import LottieAnimatedView from '../../Components/LottieAnimatedView';
+import AdmobAds from '../../Components/AdmobAds';
+import { BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 const Favourite = ({ navigation }) => {
   const [data, setData] = useState(0)
@@ -22,7 +24,7 @@ const Favourite = ({ navigation }) => {
     const result = await readData();
     let favData = result.filter(item => {
       let obj = JSON.parse(item[1])
-      const { isFav, ...other } = obj
+      const { isFav } = obj
       if (isFav) {
         return item[0]
       }
@@ -90,6 +92,12 @@ const Favourite = ({ navigation }) => {
           source={require("../../assets/empty.json")}
         />
       }
+      <View style={{ position: 'absolute', bottom: 0 }}>
+        <AdmobAds
+          id={TestIds.BANNER}
+          bannerSize={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        />
+      </View>
     </View>
   )
 }

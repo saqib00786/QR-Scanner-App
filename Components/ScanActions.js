@@ -1,17 +1,16 @@
-import { StyleSheet, Text, View, ToastAndroid, Share } from 'react-native'
+import { StyleSheet, Text, View} from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Avatar } from 'react-native-paper'
 import * as Clipboard from 'expo-clipboard';
 import { onShare } from '../util/Misc';
 import { WHITE_COLOR } from '../res/colors';
+import Toast from 'react-native-root-toast';
 
 const copyToClipBoard = async (text) => {
     await Clipboard.setStringAsync(text)
-    ToastAndroid.show(text, ToastAndroid.SHORT)
+    Toast.show("Copied..", { duration: Toast.durations.SHORT })
 }
-
-
 
 const ScanActions = ({ copiedText, navigation }) => {
     return (
@@ -84,9 +83,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     textwrapperView: {
-        flex: .8, 
-        justifyContent : 'center',
-        alignItems : 'center'
+        flex: .8,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     iconStyle: {
         height: 50,
@@ -98,9 +97,9 @@ const styles = StyleSheet.create({
         flex: .2
     },
     buttonText: {
-        fontWeight : 'bold',
-        fontSize : 14,
-        color : WHITE_COLOR,
-        marginRight : 40
+        fontWeight: 'bold',
+        fontSize: 14,
+        color: WHITE_COLOR,
+        marginRight: 40
     }
 })

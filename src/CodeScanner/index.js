@@ -8,8 +8,9 @@ import { useIsFocused } from '@react-navigation/native';
 import { DateTime, playSound, StoreData } from '../../util/Misc';
 import LottieAnimatedView from '../../Components/LottieAnimatedView'
 import uuid from 'react-native-uuid';
-import { GREEN_COLOR } from '../../res/colors';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import MaskedArea from '../../Components/MaskedArea';
+import AdmobAds from '../../Components/AdmobAds';
 
 const CodeScanner = ({ navigation }) => {
     const [permissions, setPermissions] = Camera.useCameraPermissions()
@@ -92,7 +93,7 @@ const CodeScanner = ({ navigation }) => {
                     zoom={zoom}
                     ratio='16:9'
                 >
-                    <MaskedArea/>
+                    <MaskedArea />
                 </Camera>
             }
 
@@ -118,38 +119,54 @@ const CodeScanner = ({ navigation }) => {
 
             </View>
             <View style={styles.slider}>
-                <TouchableOpacity
-                // onPress={() => onZoomAction(true)}
-                >
-                    <Avatar.Icon
-                        size={45}
-                        icon='magnify-minus'
-                        style={{ backgroundColor: 'transparent' }}
+                <View style={{
+                    width: '80%',
+                    height: 50,
+                    alignSelf: 'center',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center'
+                }}>
+
+                    <TouchableOpacity
+                    // onPress={() => onZoomAction(true)}
+                    >
+                        <Avatar.Icon
+                            size={45}
+                            icon='magnify-minus'
+                            style={{ backgroundColor: 'transparent' }}
+                        />
+                    </TouchableOpacity>
+                    <Slider
+                        minimumValue={0}
+                        maximumValue={1}
+                        maximumTrackTintColor="white"
+                        minimumTrackTintColor='white'
+                        thumbTintColor='white'
+                        style={{ width: '100%' }}
+                        //value={zoom}
+                        onValueChange={(value) => {
+                            console.log("🚀 ~ file: index.js ~ line 127 ~ CodeScanner ~ value", value)
+                            setZoom(value)
+                        }
+                        }
                     />
-                </TouchableOpacity>
-                <Slider
-                    minimumValue={0}
-                    maximumValue={1}
-                    maximumTrackTintColor="white"
-                    minimumTrackTintColor='white'
-                    thumbTintColor='white'
-                    style={{ width: '100%' }}
-                    //value={zoom}
-                    onValueChange={(value) => {
-                        console.log("🚀 ~ file: index.js ~ line 127 ~ CodeScanner ~ value", value)
-                        setZoom(value)
-                    }
-                    }
-                />
-                <TouchableOpacity
-                    onPress={() => onZoomAction()}
-                >
-                    <Avatar.Icon
-                        size={45}
-                        icon='magnify-plus'
-                        style={{ backgroundColor: 'transparent' }}
+                    <TouchableOpacity
+                        onPress={() => onZoomAction()}
+                    >
+                        <Avatar.Icon
+                            size={45}
+                            icon='magnify-plus'
+                            style={{ backgroundColor: 'transparent' }}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    <AdmobAds
+                    id={TestIds.BANNER}
+                    bannerSize={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                     />
-                </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
@@ -177,13 +194,6 @@ const styles = StyleSheet.create({
     },
     slider: {
         position: 'absolute',
-        bottom: 20,
-        margin: 20,
-        width: '60%',
-        height: 50,
-        alignSelf: 'center',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center'
+        bottom : 0
     },
 }) 

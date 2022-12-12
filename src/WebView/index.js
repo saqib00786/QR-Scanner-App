@@ -1,9 +1,9 @@
-import { StyleSheet, View, BackHandler, Platform } from 'react-native'
+import { StyleSheet, View, BackHandler, Platform, Text } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { WebView } from 'react-native-webview';
 import { Avatar } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { WHITE_COLOR,GREEN_COLOR } from '../../res/colors';
+import { WHITE_COLOR, GREEN_COLOR } from '../../res/colors';
 
 
 
@@ -60,6 +60,7 @@ const WebViewScreen = ({ route, navigation }) => {
                         style={{ backgroundColor: 'transparent' }}
                     />
                 </TouchableOpacity>
+                <Text style={styles.qrScannerTextWrapper}> QR Scanner </Text>
             </View>
             <WebView
                 ref={webRef}
@@ -85,6 +86,14 @@ const styles = StyleSheet.create({
         elevation: 5,
         width: '100%',
         height: 60,
-        backgroundColor : GREEN_COLOR
+        backgroundColor: GREEN_COLOR,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    qrScannerTextWrapper: {
+        fontSize : 18,
+        fontWeight : '700',
+        color : WHITE_COLOR,
     }
 })

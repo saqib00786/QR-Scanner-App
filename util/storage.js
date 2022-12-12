@@ -1,6 +1,6 @@
 import * as FileSystem from 'expo-file-system';
 import { StorageAccessFramework } from "expo-file-system";
-import { ToastAndroid } from 'react-native'
+import Toast from 'react-native-root-toast';
 
 export const saveFile_LocalStorage = async (data, date) => {
     const fileName = `Text${date}`
@@ -19,10 +19,10 @@ export const saveFile_LocalStorage = async (data, date) => {
                 await FileSystem.writeAsStringAsync(uri, `${data}`, {
                     encoding: FileSystem.EncodingType.UTF8
                 });
-                ToastAndroid.show('File Save Successfully', ToastAndroid.SHORT)
+                Toast.show("File Saved Sucessfully", { duration: Toast.durations.SHORT })
             })
             .catch((e) => {
-                ToastAndroid.show(e, ToastAndroid.SHORT)
+                Toast.show(e, { duration: Toast.durations.SHORT })
             });
     } catch (e) {
         throw new Error(e);

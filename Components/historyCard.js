@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     dateWrapper: {
         fontWeight: '400',
         fontSize: 14,
+        color : 'gray'
     },
     actionDel: {
     },

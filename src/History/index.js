@@ -5,6 +5,8 @@ import HistoryCard from '../../Components/historyCard';
 import LottieAnimatedView from '../../Components/LottieAnimatedView';
 import { GREEN_COLOR } from '../../res/colors';
 import { onShare, onFavourite, onRemoveItem, readData } from '../../util/Misc';
+import AdmobAds from '../../Components/AdmobAds'
+import { BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 const History = ({ navigation }) => {
   const [data, setData] = useState(0)
@@ -79,6 +81,12 @@ const History = ({ navigation }) => {
           source={require("../../assets/empty.json")}
         />
       }
+      <View style={{ position: 'absolute', bottom: 0 }}>
+        <AdmobAds
+        id={TestIds.BANNER}
+        bannerSize={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        />
+      </View>
     </View>
   )
 }

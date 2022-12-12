@@ -1,4 +1,4 @@
-import { Share, Alert } from 'react-native'
+import { Share, Alert, Linking, Platform } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-root-toast';
 import { Audio } from 'expo-av';
@@ -88,4 +88,23 @@ export async function playSound() {
     const { sound } = await Audio.Sound.createAsync(require('../assets/beep.mp3')
     );
     await sound.playAsync();
+}
+
+
+export const writeReviewForApp = () => {
+    let androidPackageName = 'com.app.qrscanner'
+    let iosIdAppStore = '12345'
+    Platform.OS === 'android' ?
+        Linking.openURL(`https://play.google.com/store/apps/details?id=${androidPackageName}
+    &showAllReviews=true`)
+        :
+        //https://apps.apple.com/app/apple-store/id${iosIdAppStore}?action=write-review
+        Linking.openURL(`ios app link here with app id`)
+}
+
+export const aboutDevelopers = () => {
+    Platform.OS === 'android' ?
+        Linking.openURL('https://play.google.com/store/apps/developer?id=BizTech+Apps')
+        :
+        Linking.openURL('ios App Store account Link here')
 }
